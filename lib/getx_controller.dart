@@ -30,10 +30,23 @@ void onInit() {
       return;
     }
 
-    searchProducts.assignAll(
-      products.where((product) {
-        return product.name.toLowerCase().contains(keyword.toLowerCase());
-      }).toList(),
-    );
+    List<Product> result = [];
+
+    for(int i = 0 ; i < products.length;i++){
+      Product currentProduct = products[i];
+
+      String productName = currentProduct.name.toLowerCase();
+      String searchKey = keyword.toLowerCase();
+      if(productName.contains(searchKey)){
+        result.add(currentProduct);
+      }
+
+      searchProducts.assignAll(result);
+    }
+  }
+
+  void editProduct(Product pro, int i){
+        products[i] = pro;
+        searchProducts.assignAll(products);
   }
 }

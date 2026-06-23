@@ -10,13 +10,11 @@ import 'package:getx_begin/model.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  final controller = Get.find<getxController>();
+  final getxController controller = Get.find<getxController>();
   TextEditingController textController = TextEditingController();
   TextEditingController priceControl = TextEditingController();
   TextEditingController quanityControll = TextEditingController();
   @override
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,6 +29,10 @@ class HomePage extends StatelessWidget {
                 label: Text("Nhap san pham can tim... "),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.deepOrangeAccent),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 icon: Icon(Icons.search),
@@ -53,6 +55,50 @@ class HomePage extends StatelessWidget {
                       price: product.price,
                       quanity: product.quantity,
                       ondelete: () => controller.onDeleted(i),
+                      onEdit: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Sua thong tin san pham"),
+                              actions: [
+                                TextFormField(
+                                  controller: textController,
+                                  decoration: InputDecoration(
+                                    label: Text("ten san pham"),
+                                  ),
+                                ),
+                                TextFormField(
+                                  controller: priceControl,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  decoration: InputDecoration(
+                                    label: Text("gia"),
+                                  ),
+                                ),
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  controller: quanityControll,
+                                  decoration: InputDecoration(
+                                    label: Text("so luong"),
+                                  ),
+                                ),
+                                TextButton(onPressed:(){
+                                  Product pro = Product(name: textController.text, price: int.tryParse(priceControl.text)?? 0, quantity: int.tryParse(quanityControll.text)?? 0);
+                                  
+                                  
+                                   controller.editProduct(pro, i);
+                                   } , child: Text("Hoan tat"))
+                              ],
+                            );
+                          },
+                        );
+                      },
                     );
                   },
                 ),
@@ -88,11 +134,11 @@ class HomePage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         int? price = int.tryParse(priceControl.text);
-                        int ? quan = int.tryParse(quanityControll.text);
+                        int? quan = int.tryParse(quanityControll.text);
                         Product res = Product(
                           name: textController.text,
                           price: price ?? 0,
-                          quantity: quan??0,
+                          quantity: quan ?? 0,
                         );
                         controller.addTask(res);
                       },
