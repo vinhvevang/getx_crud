@@ -21,22 +21,81 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         body: Column(
           children: [
-            TextFormField(
-              onChanged: (value) {
-                controller.searchProduct(value);
-              },
-              decoration: InputDecoration(
-                label: Text("Nhap san pham can tim... "),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(30),
+            Row(
+              
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (value) {
+                      controller.searchProduct(value);
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      label: Text("Nhap san pham can tim... "),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.deepOrangeAccent),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      
+                    ),
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepOrangeAccent),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                icon: Icon(Icons.search),
+                IconButton(
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController nameFilter = TextEditingController();
+        TextEditingController priceFilter = TextEditingController();
+
+        return AlertDialog(
+          title: Text("Lọc sản phẩm"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameFilter,
+                decoration: InputDecoration(labelText: "Tên sản phẩm"),
               ),
+              // TextFormField(
+              //   controller: priceFilter,
+              //   keyboardType: TextInputType.number,
+              //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              //   decoration: InputDecoration(labelText: "Giá"),
+              // ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                controller.searchProducts.assignAll(controller.products);
+                // Get.back();
+              },
+              child: Text("Reset"),
+            ),
+            TextButton(
+              onPressed: () {
+                String name = nameFilter.text;
+                // int price = int.tryParse(priceFilter.text) ?? 0;
+
+                controller.FilterProduct(name);
+
+              
+              },
+              child: Text("Lọc"),
+            ),
+          ],
+        );
+      },
+    );
+  },
+  icon: Icon(Icons.filter_list),
+)
+              ],
             ),
             Expanded(
               child: Obx(
